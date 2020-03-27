@@ -46,7 +46,6 @@ class Calculator {
     let result = sortByBestPercent.filter(function (bank) {
       return bank.incomeType == sortByBestPercent[sortByBestPercent.length - 1].incomeType;
     });
-    console.log(result);
     return result;
   }
 
@@ -71,7 +70,8 @@ class Calculator {
         result.push(bestBank);
       }
     } else {
-      alert('Нет подходящих вариантов по вашему вкладу.')
+      Application.table.style.visibility = 'hidden';
+      setTimeout(function() { alert('Нет подходящих вариантов по вашему вкладу.') }, 1);
       return;
     }
     return result;
@@ -86,8 +86,9 @@ class Application {
     this.button.addEventListener('click', function () {
       self.start();
     });
-    console.log(this);
   }
+
+  static table = document.getElementById('banks');
 
   start() {
     let itself = this;
@@ -97,7 +98,6 @@ class Application {
     }
     let calculator = new Calculator(bankProductsArray);
     let toShow = calculator.calculate(deposit);
-    console.log(toShow);
     itself.displayToUser(toShow);
   }
 
@@ -123,7 +123,8 @@ class Application {
       let deposit = new Deposit(+inputDeposit, +inputMonthlyAdded, +inputTime, inputCurrency, wantsToAddMonthly);
       return deposit;
     } else {
-      alert('Данные введены неверно');
+      this.table.style.visibility = 'hidden';
+      setTimeout(function() { alert('Данные введены неверно') }, 1);
       return false;
     }
   }
@@ -131,13 +132,18 @@ class Application {
   displayToUser(bestBanks) {
     let myTable = this.table;
 
+    if(bestBanks == undefined) {
+      return;
+    }
+
     if (bestBanks.length > 0) {
+      console.log(bestBanks);
       myTable.style.visibility = 'visible';
 
       let array = '';
       array += "<tr><th>Название банка</th><th>Вклад</th><th>Процент</th><th>Итоговая сумма</th></tr>";
       for (let bank of bestBanks) {
-        array += `<tr><td>${bank.bank}</td><td>${bank.depositType}</td><td>${bank.percent}</td><td>${bank.amount}</td></tr>`;
+        array += `<tr><td>${bank.bank}</td><td>${bank.depositType}</td><td>${bank.percent}</td><td>${separateDecimal(bank.amount)}</td></tr>`;
       }
       myTable.innerHTML = array;
     } else {
@@ -752,5 +758,9 @@ function pushArray(array) {
 let bankProductsArray = pushArray(arrayOfBanks);
 //#endregion
 
-
+function separateDecimal(number) {
+  let a = number.toString();
+  a = a.replace(new RegExp("^(\\d{" + (a.length%3?a.length%3:0) + "})(\\d{3})", "g"), "$1 $2").replace(/(\d{3})+?/gi, "$1 ").trim();
+  return a;
+}
 let application = new Application();

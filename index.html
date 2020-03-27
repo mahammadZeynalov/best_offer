@@ -5,30 +5,33 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
     <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css?family=Amatic+SC&display=swap" rel="stylesheet">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
 </head>
 <body>
     <header>
+        <img src='bank.jpg' alt='bankImage'/>
         <p>Калькулятор расчета банковского вклада с капитализацией и пополнением</p>
     </header>
     <div class="parent-container">
-        <div class='single'>
+        <div class='child'>
             <label for='start-balance'>Начальная сумма вклада</label>
-            <input type="text" id="start-balance">
+            <input type="text" id="start-balance" placeholder="Enter the positive number" value=""/>
         </div>
-        <div class='single'>
+        <div class='child'>
             <label for='period'>Сумма ежемесячного пополнения</label>
-            <input type="text" id="period" name='period'>
+            <input type="text" id="period" name='period' placeholder="Enter 0 or positive number"/>
         </div>
-        <div class='single'>
+        <div class='child'>
             <label for='duration'>Срок вклада</label>
-            <input type="text" id="duration">
+            <input type="text" id="duration" placeholder="Enter the positive number"/>
         </div>
-        <div class='single'>
+        <div class='child'>
             <label for='duration'>Валюта вклада</label>
-            <input type="text" id="currency">
+            <input type="text" id="currency" placeholder='Enter RUB or USD'/>
         </div>
-        <button id="calculate">Подобрать</button>
     </div>
+    <button id="calculate">Подобрать</button>
     <table id="banks"></table>
     <script src="script.js"></script>
 </body>
