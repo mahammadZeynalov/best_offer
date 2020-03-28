@@ -108,6 +108,19 @@ class Application {
     let inputCurrency = document.getElementById('currency').value;
     let wantsToAddMonthly = false;
 
+    if(inputDeposit <= 0 || isNaN(inputDeposit)) {
+      alert('Неверный формат депозита.');
+    }
+    if(inputMonthlyAdded <0 || isNaN(inputMonthlyAdded)) {
+      alert('Неверный формат месячного пополнения');
+    } 
+    if(inputTime <= 0 || inputTime % 1 != 0 || isNaN(inputTime))  {
+      alert('Неверный формат месяцев');
+    }
+    if(inputCurrency != 'RUB' && inputCurrency != 'USD') {
+      alert('Неверное значение валюты.')
+    }
+
     if (inputDeposit > 0 &&
       inputMonthlyAdded >= 0 &&
       inputTime > 0 && inputTime % 1 == 0 &&
@@ -119,12 +132,10 @@ class Application {
       if (inputMonthlyAdded > 0) {
         wantsToAddMonthly = true;
       }
-
       let deposit = new Deposit(+inputDeposit, +inputMonthlyAdded, +inputTime, inputCurrency, wantsToAddMonthly);
       return deposit;
     } else {
       this.table.style.visibility = 'hidden';
-      setTimeout(function() { alert('Данные введены неверно') }, 1);
       return false;
     }
   }
