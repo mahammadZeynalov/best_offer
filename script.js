@@ -109,16 +109,16 @@ class Application {
     let wantsToAddMonthly = false;
 
     if(inputDeposit <= 0 || isNaN(inputDeposit)) {
-      alert('Неверный формат депозита.');
+      setTimeout(function() { alert('Неверный формат депозита.') }, 1);
     }
     if(inputMonthlyAdded <0 || isNaN(inputMonthlyAdded)) {
-      alert('Неверный формат месячного пополнения');
+      setTimeout(function() { alert('Неверный формат месячного пополнения') }, 1);
     } 
     if(inputTime <= 0 || inputTime % 1 != 0 || isNaN(inputTime))  {
-      alert('Неверный формат месяцев');
+      setTimeout(function() { alert('Неверный формат месяцев') }, 1);
     }
     if(inputCurrency != 'RUB' && inputCurrency != 'USD') {
-      alert('Неверное значение валюты.')
+      setTimeout(function() { alert('Неверное значение валюты.') }, 1);
     }
 
     if (inputDeposit > 0 &&
