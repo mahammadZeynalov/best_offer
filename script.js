@@ -36,7 +36,7 @@ class Calculator {
         bank.termMax >= deposit.time &&
         !(bank.canDeposit == false && deposit.monthlyAdded > 0)
     });
-    
+
     this.bankList = this.bankList.sort(function (firstBank, secondBank) {
       return firstBank.incomeType - secondBank.incomeType;
     });;
@@ -55,12 +55,14 @@ class Calculator {
     let save = this.bankList;
     if (save.length > 0) {
       for (let i of save) {
+        //#region Calculate complex interest
         let amount = deposit.startDeposit * (1 + i.incomeType / 12 / 100);
         for (let j = 0; j < deposit.time - 1; j++) {
           amount += deposit.monthlyAdded;
           amount *= (1 + i.incomeType / 12 / 100);
         }
         amount = Math.round(amount);
+        //#endregion
 
         let bestBank = {
           bank: i.bankName,
@@ -72,10 +74,9 @@ class Calculator {
       }
     } else {
       Application.table.style.visibility = 'hidden';
-      setTimeout(function() { alert('Нет подходящих вариантов по вашему вкладу.') }, 1);
-      return;
+      setTimeout(function () { alert('Нет подходящих вариантов по вашему вкладу.') }, 1);
+      return [];
     }
-    console.log(result);
     return result;
   }
 }
@@ -93,14 +94,13 @@ class Application {
   static table = document.getElementById('banks');
 
   start() {
-    let itself = this;
-    let deposit = itself.getValues();
-    if(deposit == false) {
+    let deposit = this.getValues();
+    if (deposit == false) {
       return;
     }
     let calculator = new Calculator(bankProductsArray);
     let toShow = calculator.filter(deposit).calculate(deposit);
-    itself.displayToUser(toShow);
+    this.displayToUser(toShow);
   }
 
   getValues() {
@@ -109,19 +109,6 @@ class Application {
     let inputTime = document.getElementById('duration').value;
     let inputCurrency = document.getElementById('currency').value;
     let wantsToAddMonthly = false;
-
-    if(inputDeposit <= 0 || isNaN(inputDeposit)) {
-      setTimeout(function() { alert('Неверный формат депозита.') }, 1);
-    }
-    if(inputMonthlyAdded <0 || isNaN(inputMonthlyAdded)) {
-      setTimeout(function() { alert('Неверный формат месячного пополнения') }, 1);
-    } 
-    if(inputTime <= 0 || inputTime % 1 != 0 || isNaN(inputTime))  {
-      setTimeout(function() { alert('Неверный формат месяцев') }, 1);
-    }
-    if(inputCurrency != 'RUB' && inputCurrency != 'USD') {
-      setTimeout(function() { alert('Неверное значение валюты.') }, 1);
-    }
 
     if (inputDeposit > 0 &&
       inputMonthlyAdded >= 0 &&
@@ -138,16 +125,24 @@ class Application {
       return deposit;
     } else {
       this.table.style.visibility = 'hidden';
+      if (inputDeposit <= 0 || isNaN(inputDeposit)) {
+        setTimeout(function () { alert('Неверный формат депозита.') }, 1);
+      }
+      if (inputMonthlyAdded < 0 || isNaN(inputMonthlyAdded)) {
+        setTimeout(function () { alert('Неверный формат месячного пополнения') }, 1);
+      }
+      if (inputTime <= 0 || inputTime % 1 != 0 || isNaN(inputTime)) {
+        setTimeout(function () { alert('Неверный формат месяцев') }, 1);
+      }
+      if (inputCurrency != 'RUB' && inputCurrency != 'USD') {
+        setTimeout(function () { alert('Неверное значение валюты.') }, 1);
+      }
       return false;
     }
   }
 
   displayToUser(bestBanks) {
     let myTable = this.table;
-
-    if(bestBanks == undefined) {
-      return;
-    }
 
     if (bestBanks.length > 0) {
       myTable.style.visibility = 'visible';
@@ -772,7 +767,8 @@ let bankProductsArray = pushArray(arrayOfBanks);
 
 function separateDecimal(number) {
   let a = number.toString();
-  a = a.replace(new RegExp("^(\\d{" + (a.length%3?a.length%3:0) + "})(\\d{3})", "g"), "$1 $2").replace(/(\d{3})+?/gi, "$1 ").trim();
+  a = a.replace(new RegExp("^(\\d{" + (a.length % 3 ? a.length % 3 : 0) + "})(\\d{3})", "g"), "$1 $2").replace(/(\d{3})+?/gi, "$1 ").trim();
   return a;
 }
+
 let application = new Application();
