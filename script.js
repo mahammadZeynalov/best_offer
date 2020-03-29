@@ -27,10 +27,8 @@ class Calculator {
     this.bankList = bankList;
   }
 
-  //функция фильтра исходя из введенных
-
   filter(deposit) {
-    let filteredBanks = this.bankList.filter(function (bank) {
+    this.bankList = this.bankList.filter(function (bank) {
       return bank.currency == deposit.currency &&
         bank.sumMin <= deposit.startDeposit &&
         bank.sumMax >= deposit.startDeposit &&
@@ -38,33 +36,36 @@ class Calculator {
         bank.termMax >= deposit.time &&
         !(bank.canDeposit == false && deposit.monthlyAdded > 0)
     });
-
-    let sortByBestPercent = filteredBanks.sort(function (firstBank, secondBank) {
+    
+    this.bankList = this.bankList.sort(function (firstBank, secondBank) {
       return firstBank.incomeType - secondBank.incomeType;
-    });
+    });;
 
-    let result = sortByBestPercent.filter(function (bank) {
-      return bank.incomeType == sortByBestPercent[sortByBestPercent.length - 1].incomeType;
+    let indexOfBestBank = this.bankList.length - 1;
+    let self = this.bankList;
+
+    this.bankList = this.bankList.filter(function (bank) {
+      return bank.incomeType == self[indexOfBestBank].incomeType;
     });
-    return result;
+    return this;
   }
 
   calculate(deposit) {
-    let offers = this.filter(deposit);
     let result = [];
-    if (offers.length > 0) {
-      for (let i = 0; i < offers.length; i++) {
-        let amount = deposit.startDeposit * (1 + offers[i].incomeType / 12 / 100);
+    let save = this.bankList;
+    if (save.length > 0) {
+      for (let i of save) {
+        let amount = deposit.startDeposit * (1 + i.incomeType / 12 / 100);
         for (let j = 0; j < deposit.time - 1; j++) {
           amount += deposit.monthlyAdded;
-          amount *= (1 + offers[i].incomeType / 12 / 100);
+          amount *= (1 + i.incomeType / 12 / 100);
         }
         amount = Math.round(amount);
 
         let bestBank = {
-          bank: offers[i].bankName,
-          depositType: offers[i].investName,
-          percent: offers[i].incomeType,
+          bank: i.bankName,
+          depositType: i.investName,
+          percent: i.incomeType,
           amount: amount
         }
         result.push(bestBank);
@@ -74,6 +75,7 @@ class Calculator {
       setTimeout(function() { alert('Нет подходящих вариантов по вашему вкладу.') }, 1);
       return;
     }
+    console.log(result);
     return result;
   }
 }
@@ -97,7 +99,7 @@ class Application {
       return;
     }
     let calculator = new Calculator(bankProductsArray);
-    let toShow = calculator.calculate(deposit);
+    let toShow = calculator.filter(deposit).calculate(deposit);
     itself.displayToUser(toShow);
   }
 
@@ -148,7 +150,6 @@ class Application {
     }
 
     if (bestBanks.length > 0) {
-      console.log(bestBanks);
       myTable.style.visibility = 'visible';
 
       let array = '';
