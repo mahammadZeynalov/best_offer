@@ -73,7 +73,7 @@ class Calculator {
         result.push(bestBank);
       }
     } else {
-      Application.table.style.visibility = 'hidden';
+      application.table.style.visibility = 'hidden';
       setTimeout(function () { alert('Нет подходящих вариантов по вашему вкладу.') }, 1);
       return [];
     }
@@ -91,7 +91,6 @@ class Application {
     });
   }
 
-  static table = document.getElementById('banks');
 
   start() {
     let deposit = this.getValues();
